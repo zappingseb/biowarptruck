@@ -1,0 +1,22 @@
+server <- function(input, output) {
+  # Output Gray Histogram
+  output$distPlot <- renderPlot({
+    hist(rnorm(input$obs), col = 'darkgray', border = 'white')
+  })
+
+}
+
+# Simple shiny App containing the standard histogram + PDF render and Download button
+ui <- fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        "obs",
+        "Number of observations:", min = 10, max = 500, value = 100)
+    ),
+    mainPanel(
+      plotOutput("distPlot")
+    )
+  )
+)
+shinyApp(ui = ui, server = server)
