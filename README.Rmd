@@ -3,6 +3,7 @@ title: "How to build shiny.trucks not shiny.cars!"
 output: 
   html_document:
     code_folding: hide
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -11,10 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Why is this about trucks?
 
-Last month the [R/Pharma](https://www.rinpharma.com) conference took place at the Harvard Campus in Boston. I presented our development project called bioWARP, which is a large [shiny](https://shiny.rstudio.com/) application of containing more than 500.000 lines of code. And I noticed, actually nobody ever came to the idea to write such a [shiny](https://shiny.rstudio.com/) application. And I asked myself, why? A major reason is, people do not need to do that! I now would like to explain why we went our way and did it. 
+Last month the [R/Pharma](https://www.rinpharma.com) conference took place at the Harvard Campus in Boston. I presented our development project called bioWARP, which is a large [shiny](https://shiny.rstudio.com/) application of containing more than 500.000 lines of code. And I noticed, actually nobody else ever came to the idea to write such a [shiny](https://shiny.rstudio.com/) application. And I asked myself, why?
+The main reason is, people do not need to do that! I now would like to explain why we needed it, how we went our way and made it. 
 
 <div style="width:45%;float:left;margin-right:5%" align="justify">
-Imagine our large [shiny](https://shiny.rstudio.com/) app as a truck, it's nearly a monster truck, but let's leave it a truck. It's a truck because our app has more than 500 interaction item. Measuring these as horse power (*HP*) it's a kind of regular truck. [Shiny](https://shiny.rstudio.com/) apps I see in my daily work have about 50 or even less interaction items, so it these be seen as a car. With less then 50, it's a rather small car like a mini cooper. So why did my customers require a truck?
+Imagine our large [shiny](https://shiny.rstudio.com/) app as a truck, it's nearly a monster truck, but let's leave it a truck. It's a truck because our app has more than 500 interaction items. Measuring these as horse power (*HP*) it's a kind of regular truck, having 500 *HP*. [Shiny](https://shiny.rstudio.com/) apps I see in my daily work have about 50 or even less interaction items, so it these be seen as a car. With less then 50, it's a rather small car like a mini cooper. So why did my customers wanted to drive a truck?
 
 Images by [Paul V](https://flic.kr/p/B4TwtZ) and [DaveR](https://flic.kr/p/q33yzD)
 </div>
@@ -28,7 +30,7 @@ Images by [Paul V](https://flic.kr/p/B4TwtZ) and [DaveR](https://flic.kr/p/q33yz
 
 ## Why do we need a truck?
 
-Building software often starts with checking the user requirements. So when we started the development of our statistical web application, we did that, too. Asking a lot of people inside our deparment we noticed, that the list is huge:
+Building software often starts with checking the user requirements. So when we started the development of our statistical web application, we did that, too. Asking a lot of people inside our deparment we noticed, that the list of requirements was huge:
 
 **Main user requirements**
 
@@ -39,21 +41,25 @@ Building software often starts with checking the user requirements. So when we s
 **Main application features**
 
 * Session logging
-* PDF reports of all results
+* Standardized PDF reports of all results
 * Ability to restore sessions
 * Harmonize it with other software applications used
 * Everything has to be tested
 
-**Single Application features**
+More requirements came then from all the analysis people need on a daily basis and want to have them integrated
+into our app:
+
+**Mathematical features**
 
 * Linear regression app
 * Descriptive statistics app
-* Homogenicity test app
+* Homogeneity test app
 * T-Test app
 * Bootstrap simulation app
 * Sensitivity/Specificity app
 * Linearity app
 * Clustering app
+* BoxPlotting app
 
 Additionally it was required to write the whole application in **R** as all our mathematical packages are written in **R**. So we decided for doing it all with [shiny](https://shiny.rstudio.com/) because it already covers 2 of the 3 Main features.
 
@@ -61,7 +67,7 @@ Additionally it was required to write the whole application in **R** as all our 
 
 ### Modularity + Standardization
 
-Inside our department we were running some large scale desktop applications already. When it came to testing we always noticed, that testing takes forever. If each of the same software gathers data, calculates statistics, provides plot outputs and renders PDF reports, this truck is huge and you can just test it by driving it a thousand kilometers and see if it still works. The idea we came up with was building our truck out of lego brick. Each lego brick can be tested if it is strong enough. If a lego wheel runs, the truck will run. The wheel holder part is universal and if we change the size of the wheels, we can still run the truck. What this is called, is modularity. For this there exist different solutions which can be combined.
+Inside our department we were running some large scale desktop applications already. When it came to testing we always noticed, that testing takes forever. If one single same software gathers data, calculates statistics, provides plot outputs and renders PDF reports, this truck is huge and you can just test it by driving it a thousand kilometers and see if it still works. The idea we came up with was building our truck out of Lego bricks. Each Lego brick can be tested if it is strong enough. If a Lego wheel runs, the truck will run. The wheel holder part is universal and if we change the size of the wheels, we can still run the truck. What this is called, is modularity. For this there exist different solutions in R and shiny which can be combined:
 
 1) Shiny Modules
 2) Object orientation
@@ -69,7 +75,11 @@ Inside our department we were running some large scale desktop applications alre
 
 As Shiny modules were not existing when we started, we chose option 2 and 3.
 
-As an example I'll compare two simple shiny apps representing two cars here. One is written using object orientation, one as a simple shiny application. The image below shall illustrate, that the `renderPlot` function in a standard shiny app includes a plot. So whenever you add a new plot, this function has to be called inside. In the object oriented app the `renderPlot` function calls the `shinyElement` method of any plot object (Type `AnyPlot`). The fist advantage is that plot can easily be exchanged. As you see there is a straight forward disadvantage in having much more code (see code below). To describe that, you can imagine a normal car, built of car parts. Our car is more like a lego part, using even smaller **standardized** parts (lego bricks), to construct each part of the car.
+As an example I'll compare two simple shiny apps representing two cars here. One is written using object orientation, one as a simple shiny application. The image below shall illustrate, that the `renderPlot` function in a standard shiny app includes a plot, in this case using the `hist` function. So whenever you add a new plot, its function has to be called inside.
+
+In the object our oriented app the `renderPlot` function calls the `shinyElement` method of a generic plot object we created and called `AnyPlot`. The fist advantage is that plot can easily be exchanged. Please look into the code if you wonder if this really is so. To describe that advantage, you can imagine a normal car, built of car parts. Our car is really a a Lego car, using even smaller **standardized** parts (Lego bricks), to construct each part of the car. So instead of the grille made of one piece of steal, we constructed it of many little grey Lego bricks.
+
+By going into the code of the two applications, you see there is a straight forward disadvantage. There is much more code in the object oriented app. We have to define what a Lego brick is and what features it shall have.
   
 ![](./apps.png)
 
@@ -168,32 +178,30 @@ shinyApp(ui = ui, server = server)
 
 
 Another advantage of the object orientation is that you can now output the plot in a lot of different formats. We solved this by introducing methods called `pdfElement`,
- `logElement` or `archiveElement`. To get a deeper look you can check out some examples stored on [github](https://github.com/zappingseb/biowarptruck/tree/master/example_apps). These show differences between object oriented and standard shiny apps. You can see that dublicated code is reduced, additonally the code of the shiny app itself does not change for object oriented apps, but just the code constructing the objects. While for the standard apps the shiny code itself also changes.
+ `logElement` or `archiveElement`. To get a deeper look you can check out some examples stored on [github](https://github.com/zappingseb/biowarptruck/tree/master/example_apps). These show differences between object oriented and standard shiny apps. You can see that duplicated code is reduced in object oriented apps, additionally the code of the shiny app itself does not change for object oriented apps. But the code constructing the objects shown on the page changes. While for the standard apps the shiny code itself also changes everytime an element is updated.
  
-The main advantage of this approach is, that you can keep your [shiny](https://shiny.rstudio.com/) app exactly the same whatever it calculates or whatever it reports. Inside our department this ment, whenever somebody updates an r-package building plots, we do not have to touch our main app again. The look and feel, the logging, the PDF report, stays exactly the same. Adding a plot to the app does not touch any of those 3 functionalities. Just the object that will be created is touched.
+The main advantage of this approach is, that you can keep your [shiny](https://shiny.rstudio.com/) app exactly the same whatever it calculates or whatever it reports. Inside our department this meant, whenever somebody updates an r-package building plots, we do not have to touch our main app again. Whenever somebody wanted to change just the linear regression app, we did not have to touch other apps. The look and feel, the logging, the PDF report, stays exactly the same. Those 3 functionalities shall never be touched in case no update is needed.
 
 ### Packaging
 
-Inside our development we noticed, that we do not have just one singular app to build, we will have many. So we decided for each app we will construct a seperate R-package. This means we had to define one Class that defines what an app will look like. Each contributer to our shiny app then build a package that constains a child of our main class. We called this class **Module**. This is not a shiny-module, but it's modular. Our app now allows bringing together a lot of those modules and making it bigger and bigger and bigger. Yeah, we have a truck!
+Inside our development we noticed, that we do not have just one singular app to build, we will have many. So we decided for each app we will construct a separate R-package. This means we had to define one Class that defines what an app will look like in a *core*-package. Each contribute to our shiny app then build a package that contains a child of our main class. We called this class **Module**. So we got a lot of **Module**-packages. This is not a shiny-module, but it's modular. Our app now allows bringing together a lot of those modules and making it bigger and bigger and bigger. Yeah, we have a truck! Made of Lego!
 
-<a data-flickr-embed="true"  href="https://www.flickr.com/photos/157267479@N02/27368344058/in/photostream/" title="truck peterbilt"><img src="https://farm1.staticflickr.com/807/27368344058_4d23c92951_o.png" width="100%" alt="truck peterbilt"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+<a data-Flickr-embed="true"  href="https://www.flickr.com/photos/157267479@N02/27368344058/in/photostream/" title="truck peterbilt"><img src="https://farm1.staticflickr.com/807/27368344058_4d23c92951_o.png" width="100%" alt="truck peterbilt"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
 
 [Image by Barney Sharman](https://www.flickr.com/photos/157267479@N02/27368344058/in/photostream/)
 
-The modularization and packaging now enables fast testing. Why? Each package can be tested using basic test_that functionalities. So first we tested our main application package, that allows adding building blocks. Afterwards we tested each single package on its own. Finally, the whole application is tested. Our truck is ready to roll.
+The modularization and packaging now enables fast testing. Why? Each package can be tested using basic test_that functionalities. So first we tested our main application package, that allows adding building blocks. Afterwards we tested each single package on its own. Finally, the whole application is tested. Our truck is ready to roll. Upon updates, we do not have to test the whole truck again. If we want to have larger tires, we just update the tire package, but not the application itself.
 
 ### Config files
 
 The truck is made of bricks, actually the same bricks we used to build the car. Just many more of them. Now the hard part is still putting them all together.
 
+We are dealing with many the different **Modules** that we were writing. Each module comes in one package. The main issue we had was that we wanted all apps to be deeply tested. During development of course not all apps were tested right away, so we had to give the a tag. Additionally some apps required help pages, others don't. Some apps came with example data sets, some don't, which were stored in an additional data sets folder. Some apps had a nice title in them already, for some it shall be easy to configure. For each **Module** we'll also have to source js and css files, which we allowed to be additionally added for each app. The folder where to source them shall be chosen by the app author. We wanted to provide as much flexibility as possible while keeping our standards for Lego bricks (Look&Feel, logging, plotting and reporting).
 
-
-The next problem we had to solve was how to deal with all the different shiny apps that we were writing. The main issue was, that we wanted all apps to be deeply tested. During development of course not all apps were tested right away, so we had to give the a tag. Additionally some apps required help pages, others don't. Some apps came with example data sets, some don't, which were stored in an additional datasets folder. Some apps had a nice title in them already, for some it shall be easy to configure. For each **Module** we'll also have to source js and css files, which we allowed to be additionally added for each app. The folder where to source them shall be chosen by the app author.
-
-We came up with the idea of config `XML` files. So the XMl file contains all the information needed to tell what needs to be set for each **Module**. An example XML is given below which you can see as the LEGO manual:
+We came up with the idea of config `XML` files. So the XML file contains all the information needed to tell what needs to be set for each **Module**. An example XML is given below which you can see as the LEGO manual. These small configurations allow managing the apps. We also build an `XML` that allows the apps to use features of the what we call *call*-package. This `XML` file is rather difficult to set up. But imagine it tells which Plot shall be logged, which input shall be used and which plots shall go into the PDF report. It allows fast development while sticking to standards.
 
 <div style="clear:both"></div>
-<div style="width:40%;margin-right:5%;float:left"><a href="http://lego.brickinstructions.com" ><img src="http://lego.brickinstructions.com/03000/3221/031.jpg" alt="drawing" />
+<div style="width:40%;margin-right:5%;float:left"><a href="http://Lego.brickinstructions.com" ><img src="http://Lego.brickinstructions.com/03000/3221/031.jpg" alt="drawing" />
 <br/>from LegoBrickinstructions.com<br/></a></div>
 <div style="float:left;width:49%">
 ```{XML}
@@ -217,18 +225,22 @@ We came up with the idea of config `XML` files. So the XMl file contains all the
 
 </div><div style="clear:both"></div>
 
-You can clearly see that now the title of the app and the location of help pages and example data sets is given. Even the name of the class that describes the module is given. This allows us to rapidly add modules to our main app environment
+Inside the config file you can clearly see that now the title of the app and the location of help pages, example data sets is given. Even the name of the class that describes the **Module** is given. This allows us to rapidly add modules to our main app environment.
 
-## My message to you
+At the end our truck is made of many parts, that all increase its power and strength. As we now have around 16 modules in our app and each has between 20 and 50 inputs, the truck has 500 inputs. All which look similar and can be used to produced standardized PDF reports. The truck can even become a monster truck and thanks to the config files will still be easy to manage.
 
-1. Please do not start building a car until you know how many parts it will have at the end. First define your requirements.
-2. Use modularization! Use shiny modules or inheritence provided by object orientation. Both keep you from changing a lot of code on minor changes.
-3. Use standardization! Try to have all your outputs as standardized as possible. If you use simple bricks it's easy to output them in your preferred format. Features like logging, PDF reporting or even testing will be way easier with standardized elements. Don't build real trucks, build LEGO trucks.
+## My message to shiny.car and shiny.truck developers
+
+1. Please do not start building a car until you know how many parts it will have at the end. Always consider it
+might become a truck. At First always define your requirements.
+2. Use modularization! Use [shiny modules](https://shiny.rstudio.com/articles/modules.html) or inheritance provided by object orientation. Both keep you from changing a lot of code on minor changes in requirements.
+3. Use standardization! Try to have all your inputs and outputs as standardized as possible. If you use simple output bricks it's easy to output them in your preferred format. Features like logging, PDF reporting or even testing will be way easier with standardized elements. Standardized inputs allow your users to be comfortable with new apps way faster.
+4. Don't build real trucks, build LEGO trucks.
 
 
 <div style="width:100%;float:left">
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/85090026@N06/23016489623/in/photolist-B4TwtZ-9AAG2n-ATVCE2-8H7BXs-bWEepB-b5oGq6-9ScLZx-nsQVXP-SwRfJn-p4pBSb-s8qk1A-RdvAzc-UTegWT-V5ik7W-nFDVyu-U4hhS5-S1YzQ4-TNJKtE-VMa34Q-dbBA7T-dxY87H-AUKEtM-BSURfW-R8PE1f-TxSqCy-Rn42kf-UWcGq3-ni1aoM-b5tFPc-cHPh5h-boLdCo-dm5ESK-9RCSui-aWp9Z8-8C8Ng3-9A1yQq-azvuBD-SsHkof-Tvu42W-RnbZWN-qHYHjN-of5Sks-BhCWbB-pqEKus-8CFqHD-aSwrqB-gcnXM8-dD4kxS-eNo35G-RuQVQa" title="Peterbilt Truck"><img src="https://farm1.staticflickr.com/743/23016489623_736b8a0fe9_k.jpg" width="32%" alt="Peterbilt Truck" style="float:left;filter: sepia(2);"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
-<a ><img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_right.svg" width="20%" style="margin-left:5%;margin-right:5%;float:left"></a>
+<a ><img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Arrow_right.svg" width="20%" style="margin-left:5%;margin-right:5%;float:left;margin-top:100px"></a>
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/157267479@N02/27368344058/in/photostream/" title="truck peterbilt"><img src="https://farm1.staticflickr.com/807/27368344058_4d23c92951_o.png"  width="32%" style="float:left" alt="Red Mini Cooper"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
 
 </div>
