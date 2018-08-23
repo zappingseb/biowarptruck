@@ -52,7 +52,7 @@ ui <- fluidPage(
       sliderInput("obs", "Number of observations:", min = 10, max = 500, value = 100)
     ),
     mainPanel(
-      uiOutput("renderPlot")
+      plotOutput("renderPlot")
     )
   )
 )
