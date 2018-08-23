@@ -1,20 +1,28 @@
 server <- function(input, output) {
   # Output Gray Histogram
   output$distPlot <- renderPlot({
+    write(paste0("hist(rnorm(",input$obs,"), col = 'darkgray', border = 'white') evaluated"),file="app.log",append=TRUE)
     hist(rnorm(input$obs), col = 'darkgray', border = 'white')
   })
   # Output Blue Histogram
   output$distPlot2 <- renderPlot({
+    write(paste0("hist(rnorm(",input$obs,"), col = 'blue', border = 'white') evaluated"),file="app.log",append=TRUE)
     hist(rnorm(input$obs), col = 'blue', border = 'white')
+  })
+  # Output Blue Histogram
+  output$scatterplot <- renderPlot({
+    write(
+      paste0("plot(sample(",input$obs,"), sample(",input$obs,") evaluated"),file="app.log",append=TRUE)
+    plot(sample(input$obs), sample(input$obs))
   })
   
   # Observe PDF button and create PDF
   observeEvent(input$"renderPDF",{
     tryCatch({
       pdf("test.pdf")
-      par(mfrow=c(2,1))
       hist(rnorm(input$obs), col = 'blue', border = 'white')
       hist(rnorm(input$obs), col = 'darkgray', border = 'white')
+      plot(sample(input$obs), sample(input$obs))
       dev.off()
       output$renderedPDF <- renderText("PDF rendered")
     },error=function(e){output$renderedPDF <- renderText("PDF could not be rendered")})
@@ -42,7 +50,8 @@ ui <- fluidPage(
     ),
     mainPanel(
       plotOutput("distPlot"),
-      plotOutput("distPlot2")
+      plotOutput("distPlot2"),
+      plotOutput("scatterplot")
     )
   )
 )

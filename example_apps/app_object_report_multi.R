@@ -6,9 +6,11 @@ library(glue)
 setGeneric("plotElement",where = parent.frame(),def = function(object){standardGeneric("plotElement")})
 setGeneric("pdfElement",where = parent.frame(),def = function(object){standardGeneric("pdfElement")})
 setGeneric("shinyElement",where = parent.frame(),def = function(object){standardGeneric("shinyElement")})
+setGeneric("logElement",where = parent.frame(),def = function(object){standardGeneric("logElement")})
 
 setClass("AnyPlot", representation(plot_element = "call"))
 setClass("HistPlot", representation(color="character",obs="numeric"), contains = "AnyPlot")
+setClass("ScatterPlot", representation(obs="numeric"), contains = "AnyPlot")
 setClass("Report",representation(plots="list",filename="character",obs="numeric",rendered="logical"))
 
 AnyPlot <- function(plot_element=expr(plot(1,1))){
@@ -24,18 +26,32 @@ HistPlot <- function(color="darkgrey",obs=100){
       obs = obs
       )
 }
+ScatterPlot <- function(obs=100){
+  new("ScatterPlot",
+      plot_element = expr(plot(sample(!!obs),sample(!!obs))),
+      obs = obs
+  )
+}
 
 Report <- function(obs=100){
   new("Report",
     plots = list(
       HistPlot(color="darkgrey", obs=obs),
-      HistPlot(color="blue",     obs=obs)
+      HistPlot(color="blue",     obs=obs),
+      ScatterPlot(obs=obs)
     ),
     filename="test.pdf",
     obs=obs,
     rendered=FALSE
   )
 }
+
+
+#' Method to log a Plot Element
+setMethod("logElement",signature = "AnyPlot",definition = function(object){
+ # print(deparse(object@plot_element))
+  write(paste0(deparse(object@plot_element)," evaluated"),file="app.log",append=TRUE)
+})
 #' Method to plot a Plot element
 setMethod("plotElement",signature = "AnyPlot",definition = function(object){
   eval(object@plot_element)
@@ -62,7 +78,11 @@ setMethod("pdfElement",signature = "Report",definition = function(object){
 #' Tell how to generate the shiny Element for a report
 setMethod("shinyElement",signature = "Report",definition = function(object){
   renderUI({
-    lapply(object@plots,function(x){shinyElement(x)})
+    lapply(object@plots,
+            function(x){
+              logElement(x)
+              shinyElement(x)
+      })
   })
 })
 

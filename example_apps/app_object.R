@@ -4,7 +4,6 @@ library(rlang)
 
 setGeneric("plotElement",where = parent.frame(),def = function(object){standardGeneric("plotElement")})
 setGeneric("shinyElement",where = parent.frame(),def = function(object){standardGeneric("shinyElement")})
-
 setClass("AnyPlot", representation(plot_element = "call"))
 setClass("HistPlot", representation(color="character",obs="numeric"), contains = "AnyPlot")
 
