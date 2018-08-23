@@ -190,7 +190,7 @@ Inside our development we noticed, that we do not have just one singular app to 
 
 [Image by Barney Sharman](https://www.flickr.com/photos/157267479@N02/27368344058/in/photostream/)
 
-The modularization and packaging now enables fast testing. Why? Each package can be tested using basic test_that functionalities. So first we tested our main application package, that allows adding building blocks. Afterwards we tested each single package on its own. Finally, the whole application is tested. Our truck is ready to roll. Upon updates, we do not have to test the whole truck again. If we want to have larger tires, we just update the tire package, but not the application itself.
+The modularization and packaging now enables fast testing. Why? Each package can be tested using basic [testthat](https://github.com/r-lib/testthat) functionalities. So first we tested our main application package, that allows adding building blocks. Afterwards we tested each single package on its own. Finally, the whole application is tested. Our truck is ready to roll. Upon updates, we do not have to test the whole truck again. If we want to have larger tires, we just update the tire package, but not the application itself.
 
 ### Config files
 
