@@ -131,8 +131,8 @@ setMethod("shinyElement",signature = "Report",definition = function(object){
   })
 })
 
-#' 
-#' 
+#' Load an app Module Package
+#' @param xmlItem (\code{xmlNode})
 #' @export
 #' 
 #' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
@@ -141,7 +141,14 @@ load_module <- function(xmlItem){
   # Load the desired module package
   devtools::load_all(paste0("./",xmlValue(xmlItem[["package"]]))) 
 }
+#' Create a TabPanel from an XMLItem
+#' 
+#' @param xmlItem (\code{xmlNode})
+#' 
 #' @export
+#' 
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com}) 
+#' 
 module_tab <- function(xmlItem){
   # Return a shiny tabPanel for the package
   tabPanel(xmlValue(xmlItem[["name"]]),
