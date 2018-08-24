@@ -46,8 +46,7 @@ Building software often starts with checking the user requirements. So when we s
 * Harmonize it with other software applications used
 * Everything has to be tested
 
-More requirements came then from all the analysis people need on a daily basis and want to have them integrated
-into our app:
+More requirements came then from all the analysis people's need on a daily basis. They wanted to have some features integrated into our app:
 
 **Mathematical features**
 
@@ -61,7 +60,7 @@ into our app:
 * Clustering app
 * BoxPlotting app
 
-Additionally it was required to write the whole application in **R** as all our mathematical packages are written in **R**. So we decided for doing it all with [shiny](https://shiny.rstudio.com/) because it already covers 2 of the 3 Main features.
+Additionally it was required to write the whole application in **R** as all our mathematical packages are written in **R**. So we decided for doing it all with [shiny](https://shiny.rstudio.com/) because it already covers 2 of the 3 Main user requirements, being pretty and being interactive.
 
 ## How did we build the truck?
 
