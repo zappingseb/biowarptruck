@@ -1,0 +1,33 @@
+hist(rnorm(100L), col = "darkgrey", border = "white") evaluated
+plot(sample(100L), sample(100L)) evaluated
+hist(rnorm(254L), col = "darkgrey", border = "white") evaluated
+plot(sample(254L), sample(254L)) evaluated
+hist(rnorm(100L), col = "darkgrey", border = "white") evaluated
+plot(sample(100L), sample(100L)) evaluated
+hist(rnorm(168L), col = "darkgrey", border = "white") evaluated
+plot(sample(168L), sample(168L)) evaluated
+hist(rnorm(220L), col = "darkgrey", border = "white") evaluated
+plot(sample(220L), sample(220L)) evaluated
+hist(rnorm(100L), col = "darkgrey", border = "white") evaluated
+plot(sample(100L), sample(100L)) evaluated
+hist(rnorm(176L), col = "darkgrey", border = "white") evaluated
+plot(sample(176L), sample(176L)) evaluated
+hist(rnorm(100L), col = "darkgrey", border = "white") evaluated
+plot(sample(100L), sample(100L)) evaluated
+hist(rnorm(128L), col = "darkgrey", border = "white") evaluated
+plot(sample(128L), sample(128L)) evaluated
+hist(rnorm(229L), col = "darkgrey", border = "white") evaluated
+plot(sample(229L), sample(229L)) evaluated
+data.frame(x = sample(x = 229L, size = 5)) evaluated
+hist(rnorm(229L), col = "darkgrey", border = "white") evaluated
+plot(sample(229L), sample(229L)) evaluated
+data.frame(x = sample(x = 100L, size = 5)) evaluated
+hist(rnorm(100L), col = "darkgrey", border = "white") evaluated
+plot(sample(100L), sample(100L)) evaluated
+hist(rnorm(110L), col = "darkgrey", border = "white") evaluated
+plot(sample(110L), sample(110L)) evaluated
+hist(rnorm(238L), col = "darkgrey", border = "white") evaluated
+plot(sample(238L), sample(238L)) evaluated
+data.frame(x = sample(x = 238L, size = 5)) evaluated
+hist(rnorm(238L), col = "darkgrey", border = "white") evaluated
+plot(sample(238L), sample(238L)) evaluated

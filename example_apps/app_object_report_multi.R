@@ -95,7 +95,6 @@ server <- function(input, output, session) {
   # Check for change of the slider to change the plots
   observeEvent(input$obs,{
     output$renderedPDF <- renderText("")
-    report_element <- shinyElement( report_obj())
     output$reportReport <-  shinyElement(  report_obj() )
   } )
   

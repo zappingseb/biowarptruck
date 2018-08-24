@@ -1,0 +1,23 @@
+Package: appCore
+Version: 1.0.0
+Date: 2018-08-22
+Title: A package defining which elements can appear inside an app
+Authors@R: c(
+    person("Sebastian", "Wolf", , "zappingseb@gmail.com", role = c("aut","cre"))
+    )
+Depends:
+    R (>= 3.1.3),
+    shiny,
+    methods,
+    rlang,
+    XML,
+    devtools
+Description: This provides a framework for R packages developed for
+	a regulatory environment. It is based on the 'testthat' unit testing system and provides the adapter
+    functionalities for XML-based test case definition as well as for standardized
+    reporting of the test results.
+Collate:
+    core.R
+VignetteBuilder: knitr
+License: GPL (>= 2)
+RoxygenNote: 6.0.1

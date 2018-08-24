@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modules>
+  <module>
+    <id>module1</id>
+    <name>Plot Module</name>
+    <package>module1</package>
+    <class>PlotReport</class>
+  </module>
+  <module>
+    <id>module2</id>
+    <name>Text Output</name>
+    <package>module2</package>
+    <class>TextReport</class>
+  </module>
+</modules>
+  

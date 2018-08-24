@@ -1,0 +1,17 @@
+Package: module1
+Version: 1.0.0
+Date: 2018-08-22
+Title: A package defining which a plot module App
+Authors@R: c(
+    person("Sebastian", "Wolf", , "zappingseb@gmail.com", role = c("aut","cre"))
+    )
+Depends:
+    R (>= 3.1.3),
+    appCore
+Description: This package provides some functionality to create plots for
+  one observation
+Collate:
+    module1.R
+VignetteBuilder: knitr
+License: GPL (>= 2)
+RoxygenNote: 6.0.1
