@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Why is this about trucks?
 
-Last month the [R/Pharma](https://www.rinpharma.com) conference took place at the Harvard Campus in Boston. I presented our development project called bioWARP, which is a large [shiny](https://shiny.rstudio.com/) application of containing more than 500.000 lines of code. And I noticed, actually nobody else ever came to the idea to write such a [shiny](https://shiny.rstudio.com/) application. And I asked myself, why?
+Last month the [R/Pharma](https://www.rinpharma.com) conference took place at the Harvard Campus in Cambridge,MA. I presented our development project called bioWARP, which is a large [shiny](https://shiny.rstudio.com/) application of containing more than 500.000 lines of code. And I noticed, actually nobody else ever came to the idea to write such a [shiny](https://shiny.rstudio.com/) application. And I asked myself, why?
 The main reason is, people do not need to do that! I now would like to explain why we needed it, how we went our way and made it. 
 
 <div style="width:45%;float:left;margin-right:5%" align="justify">
