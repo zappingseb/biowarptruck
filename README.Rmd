@@ -1,23 +1,38 @@
 ---
-title: "How to build shiny.trucks not shiny.cars!"
-output: 
-  html_document:
-    code_folding: hide
-    toc: true
+title: How to Build a Shiny "Truck"!
+author: Sebastian Wolf
+date: '2018-08-28'
+slug: how-to-build-shiny-trucks-not-shiny-cars
+categories:
+  - R Language
+  - Shiny
+tags:
+  - R Language
+  - Shiny
+summary: ''
+draft: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include = FALSE}
+# packages required for this post
+for (pkg in c('methods', 'rlang')) 
+  if (!requireNamespace(pkg)) install.packages(pkg)
+
+knitr::opts_chunk$set(echo=TRUE)
 ```
+
 
 ## Why is this about trucks?
 
-Last month the [R/Pharma](https://www.rinpharma.com) conference took place at the Harvard Campus in Cambridge, MA. I presented our development project called bioWARP, which is a large [shiny](https://shiny.rstudio.com/) application containing more than 500.000 lines of code. And I noticed, actually nobody else ever came to the idea to write such a large [shiny](https://shiny.rstudio.com/) application. And I asked myself, why?
+Last month, at the [R/Pharma](https://www.rinpharma.com) conference that took place on the Harvard Campus, I presented bioWARP, a large [Shiny](https://shiny.rstudio.com/) application containing more than 500,000 lines of code. Although several other Shiny apps were presented at the conference, I noticed that none of them came close to being as big as bioWARP. And I asked myself, why?
 
-The main reason is, people do not need to do that! I now would like to explain why we needed it, how we went our way and made it. 
+I concluded that most people just don't need to built them that big! So now, I would like to explain why we needed such a large app and how we went about building it. 
+
+
 
 <div style="width:45%;float:left;margin-right:5%" align="justify">
-Imagine our large [shiny](https://shiny.rstudio.com/) app as a truck, it's nearly a monster truck, but let's leave it a truck. It's a truck because our app has more than 500 interaction items. Measuring these as horse power (*HP*) it's a kind of regular truck, having 500 *HP*. [Shiny](https://shiny.rstudio.com/) apps I see in my daily work have about 50 or even less interaction items. So these be seen as a car. With less then 50, it's a rather small car like a mini cooper. So why did my customers wanted to drive a truck while all others like to drive cars?
+To give you an idea of the scale I am talking about an automotive methaphor might be useful. A typical Shiny app I see in my daily work has about 50 or even less interaction items. Let's imagine this as a car. With less than 50 interactions think of a small car like a mini cooper. Compared to these applications, with more than 500 interactions, bioWARP is a truck, maybe even a "monster" truck. So why do my customers want to drive trucks when everyone else is driving cars?
+
 
 Images by [Paul V](https://flic.kr/p/B4TwtZ) and [DaveR](https://flic.kr/p/q33yzD)
 </div>
@@ -77,13 +92,13 @@ Inside our department we were running some large scale desktop applications alre
 
 As Shiny modules were not existing when we started, we chose option 2 and 3.
 
-As an example I'll compare two simple shiny apps representing two cars here. One is written using object orientation, one as a simple shiny application. The image below shall illustrate, that the `renderPlot` function in a standard shiny app includes a plot, in this case using the `hist` function. So whenever you add a new plot, its function has to be called inside.
+As an example, I'll compare two simple Shiny apps representing two cars here. One is written using object orientation, one as a simple Shiny application. The image below shall illustrate, that the `renderPlot` function in a standard shiny app includes a plot, in this case using the `hist` function. So whenever you add a new plot, its function has to be called inside.
 
-In the object oriented app the `renderPlot` function calls the `shinyElement` method of a generic plot object we created and called `AnyPlot`. The fist advantage is that plot can easily be exchanged. Please look into the code if you wonder if this really is so. To describe that advantage, you can imagine a normal car, built of car parts. Our car is really a a Lego car, using even smaller **standardized** parts (Lego bricks), to construct each part of the car. So instead of the grille made of one piece of steal, we constructed it of many little grey Lego bricks. Changing the grille for an update of the car does not need to reconstruct the whole front. Just use green bricks instead of grey bricks e.g. They should have the same shape.
+In the object oriented app the `renderPlot` function calls the `shinyElement` method of a generic plot object we created and called `AnyPlot`. The fist advantage is that plot can easily be exchanged. (Please look into the code if you wonder if this really is so.) To describe that advantage, you can imagine a normal car, built of car parts. Our car is really a a Lego car, using even smaller **standardized** parts (Lego bricks), to construct each part of the car. So instead of the grille made of one piece of steal, we constructed it of many little grey Lego bricks. Changing the grille for an update of the car does not need to reconstruct the whole front. Just use green bricks instead of grey bricks e.g. They should have the same shape.
 
-By going into the code of the two applications, you see there is a straight forward disadvantage of object orientation. There is much more code. We have to define what a Lego brick is and what features it shall have.
+By going into the code of the two applications, you see there is a straight forward disadvantage of object orientation. There is much more code. We have to define what a Lego brick is and what features it shall have.    
   
-![](./apps.png)
+![](apps.png)
 
 [Object oriented shiny app](https://github.com/zappingseb/biowarptruck/blob/master/example_apps/app_object.R)
 ```{r, echo=TRUE,eval=F}
@@ -201,7 +216,7 @@ The modularization and packaging now enables fast testing. Why? Each package can
 The truck is made of bricks, actually the same bricks we used to build the car. Just many more of them. Now the hard part is putting them all together and not losing track.
 
 We are dealing with many the different **Modules** that we were writing. Each 
-**Module** comes in one package. The main issue we had was that we wanted all apps to be deeply tested. During development of course not all apps were tested right away, so we had to give them a tag (tested yes/no). Additionally some apps required help pages, others don't. Some apps came with example data sets, some don't. Some apps had a nice title in them already, for some it shall be easy to configure. For each **Module** we'll also have to source js and css files, which we allowed to be additionally added for each app. The folder where to source them shall be chosen by the app author. We wanted to provide as much flexibility as possible while keeping our standards for Lego bricks (Look&Feel, logging, plotting and reporting). A simple example for such an app can be found on [github](https://github.com/zappingseb/biowarptruck/tree/master/example_packaged).
+**Module** comes in one package. The main issue we had was that we wanted all apps to be deeply tested. During development of course not all apps were tested right away, so we had to give them a tag (tested yes/no). Additionally some apps required help pages, others don't. Some apps came with example data sets, some don't. Some apps had a nice title in them already, for some it shall be easy to configure. For each **Module** we'll also have to source `js` and `css` files, which we allowed to be additionally added for each app. The folder where to source them shall be chosen by the app author. We wanted to provide as much flexibility as possible while keeping our standards for Lego bricks (Look&Feel, logging, plotting and reporting). A simple example for such an app can be found on [github](https://github.com/zappingseb/biowarptruck/tree/master/example_packaged).
 
 We came up with the idea of config `XML` files. So the XML file contains all the information needed to tell what needs to be set for each **Module**. An example XML is given below which you can see as the LEGO manual. These small configurations allow managing the apps. We also build an `XML` that allows the apps to use features of what we call *core*-package. This `XML` file is rather difficult to set up. But imagine it tells which Plot shall be logged, which input shall be used and which plots shall go into the PDF report. It allows fast development while sticking to standards. 
 
