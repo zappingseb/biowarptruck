@@ -1,18 +1,11 @@
 # Define Generics ---------------------------------------------------------------------------------
-setGeneric("plotElement",where = parent.frame(),def = function(object){standardGeneric("plotElement")})
+setGeneric("evalElement",where = parent.frame(),def = function(object){standardGeneric("evalElement")})
 setGeneric("pdfElement",where = parent.frame(),def = function(object){standardGeneric("pdfElement")})
 setGeneric("shinyElement",where = parent.frame(),def = function(object){standardGeneric("shinyElement")})
 setGeneric("logElement",where = parent.frame(),def = function(object){standardGeneric("logElement")})
 
 # Define Report and Plot Classes --------------------------------------------------------------------
 
-#' Plot Module for apps
-#' 
-#' @slot plot_element (\code{call}) A call that can upon \code{eval} return a plot element
-#' 
-#' @export
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})  
-setClass("AnyPlot", representation(plot_element = "call"))
 
 #' Report Module for apps
 #' 
@@ -23,66 +16,12 @@ setClass("AnyPlot", representation(plot_element = "call"))
 #' 
 #' @export
 #' @author Sebastian Wolf (\email{zappingseb@@gmail.com})  
-setClass("Report",representation(plots="list",filename="character",obs="numeric",rendered="logical"))
-
-# Constructors of classes ---------------------------------------------------------------------------
-
-#' Construct the AnyPlot class
-#' @param plot_element (\code{call}) A call returning a plot
-#' @export
-#' @return \code{AnyPlot} an object of class AnyPlot
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
-AnyPlot <- function(plot_element=expr(plot(1,1))){
-  new("AnyPlot",
-      plot_element = plot_element
-  )
-}
-
-# Plot Methods ------------------------------------------------------------
-
-#' Method to log a Plot Element
-#' 
-#' @param object \code{AnyPlot} An object
-#' 
-#' @return nothing is returned, the call of the object is written into a logfile
-#' @export
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
-setMethod("logElement",signature = "AnyPlot",definition = function(object){
-  write(paste0(deparse(object@plot_element)," evaluated"),file="app.log",append=TRUE)
-})
-
-#' Method to plot a Plot element
-#' 
-#' @param object \code{AnyPlot} An object
-#' 
-#' @return A plot object, fully rendered
-#' @export
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
-setMethod("plotElement",signature = "AnyPlot",definition = function(object){
-  eval(object@plot_element)
-})
-#' Method to return a PDF element
-#' @param object \code{AnyPlot} An object
-#' 
-#' @return Same call as \link{plotElement}
-#' @export
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
-setMethod("pdfElement",signature = "AnyPlot",definition = function(object){
-  plotElement(object)
-})
-
-#' Method to shiny output a Plot
-#' 
-#' @param object \code{AnyPlot} An object
-#' 
-#' @return A Shiny element created by \link[shiny]{renderPlot}
-#' 
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
-#' @export
-setMethod("shinyElement",signature = "AnyPlot",definition = function(object){
-  renderPlot(plotElement(object))
-})
-
+setClass("Report",
+         representation(
+           plots="list",
+           filename="character",
+           obs="numeric",
+           rendered="logical"))
 
 # Report Methods ------------------------------------------------------------
 
@@ -131,27 +70,71 @@ setMethod("shinyElement",signature = "Report",definition = function(object){
   })
 })
 
-#' Load an app Module Package
-#' @param xmlItem (\code{xmlNode})
-#' @export
+#- Anyplot class ----------------------------------------------------------------
+
+#' Plot Module for apps
 #' 
+#' @slot plot_element (\code{call}) A call that can upon \code{eval} return a plot element
+#' 
+#' @export
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})  
+
+
+# Constructors of AnyPlot classes ---------------------------------------------------------------------------
+
+#' Construct the AnyPlot class
+#' @param plot_element (\code{call}) A call returning a plot
+#' @export
+#' @return \code{AnyPlot} an object of class AnyPlot
 #' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
-#' 
-load_module <- function(xmlItem){
-  # Load the desired module package
-  devtools::load_all(paste0("./",xmlValue(xmlItem[["package"]]))) 
-}
-#' Create a TabPanel from an XMLItem
-#' 
-#' @param xmlItem (\code{xmlNode})
-#' 
-#' @export
-#' 
-#' @author Sebastian Wolf (\email{zappingseb@@gmail.com}) 
-#' 
-module_tab <- function(xmlItem){
-  # Return a shiny tabPanel for the package
-  tabPanel(xmlValue(xmlItem[["name"]]),
-            uiOutput(xmlValue(xmlItem[["id"]]))
+AnyPlot <- function(plot_element=expr(plot(1,1))){
+  new("AnyPlot",
+      plot_element = plot_element
   )
 }
+
+# Plot Methods ------------------------------------------------------------
+
+#' Method to log a Plot Element
+#' 
+#' @param object \code{AnyPlot} An object
+#' 
+#' @return nothing is returned, the call of the object is written into a logfile
+#' @export
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
+setMethod("logElement",signature = "AnyPlot",definition = function(object){
+  write(paste0(deparse(object@plot_element)," evaluated"), file="app.log",append=TRUE)
+})
+
+#' Method to plot a Plot element
+#' 
+#' @param object \code{AnyPlot} An object
+#' 
+#' @return A plot object, fully rendered
+#' @export
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
+setMethod("evalElement",signature = "AnyPlot",definition = function(object){
+  eval(object@plot_element)
+})
+#' Method to return a PDF element
+#' @param object \code{AnyPlot} An object
+#' 
+#' @return Same call as \link{evalElement}
+#' @export
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
+setMethod("pdfElement",signature = "AnyPlot",definition = function(object){
+  evalElement(object)
+})
+
+#' Method to shiny output a Plot
+#' 
+#' @param object \code{AnyPlot} An object
+#' 
+#' @return A Shiny element created by \link[shiny]{renderPlot}
+#' 
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
+#' @export
+setMethod("shinyElement",signature = "AnyPlot",definition = function(object){
+  renderPlot(evalElement(object))
+})
+

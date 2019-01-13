@@ -3,11 +3,43 @@ library(devtools)
 # Derive the core package to have all basics inside
 devtools::load_all("./core")
 
+#- Read the plan functions -------------------------- 
+
+#' Load an app Module Package
+#' @param xmlItem (\code{xmlNode})
+#' @export
+#' 
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com})
+#' 
+load_module <- function(xmlItem){
+  # Load the desired module package
+  devtools::load_all(paste0("./",xmlValue(xmlItem[["package"]]))) 
+}
+
+#' Create a TabPanel from an XMLItem
+#' 
+#' @param xmlItem (\code{xmlNode})
+#' 
+#' @export
+#' 
+#' @author Sebastian Wolf (\email{zappingseb@@gmail.com}) 
+#' 
+module_tab <- function(xmlItem){
+  # Return a shiny tabPanel for the package
+  tabPanel(xmlValue(xmlItem[["name"]]),
+           uiOutput(xmlValue(xmlItem[["id"]]))
+  )
+}
+
 server <- function(input,output){
   
   # Derive the infos from the configuration and store it inside a list
   configuration <- xmlApply(xmlRoot(xmlParse("config.xml")),function(xmlItem){
     load_module(xmlItem)
+    
+    # Append Tabs to the Reporting Window
+    appendTab("modules",module_tab(xmlItem),select = TRUE)
+    
     list(
       name = xmlValue(xmlItem[["name"]]),
       class = xmlValue(xmlItem[["class"]]),
@@ -15,10 +47,6 @@ server <- function(input,output){
     )
   })
   
-  # Append Tabs to the Reporting Window
-  xmlApply(xmlRoot(xmlParse("config.xml")),function(xmlItem){
-    appendTab("modules",module_tab(xmlItem),select = TRUE)
-  })
   
   # Create a reactive to create the Report object due to
   # the chosen module

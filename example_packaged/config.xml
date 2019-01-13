@@ -10,7 +10,7 @@
     <id>module2</id>
     <name>Text Output</name>
     <package>module2</package>
-    <class>TextReport</class>
+    <class>TableReport</class>
   </module>
 </modules>
   

@@ -3,7 +3,7 @@ setClass("TableElement", representation(obs="numeric"), contains = "AnyPlot")
 
 
 # Define Children of Report class to enable different reports easily ---------------
-setClass("TextReport",contains = "Report")
+setClass("TableReport",contains = "Report")
 
 
 
@@ -25,9 +25,9 @@ TableElement <- function(obs=100){
 }
 
 
-#' Constructor for a TextReport
-TextReport <- function(obs=100){
-  new("TextReport",
+#' Constructor for a TableReport
+TableReport <- function(obs=100){
+  new("TableReport",
       plots=list(
         TableElement(obs=obs)
       ),
@@ -41,10 +41,10 @@ TextReport <- function(obs=100){
 # Table Methods -------------------------------------------------------------
 
 setMethod("shinyElement",signature = "TableElement",definition = function(object){
-  renderDataTable(plotElement(object))
+  renderDataTable(evalElement(object))
 })
 
 #' Method to plot a Plot element
 setMethod("pdfElement",signature = "TableElement",definition = function(object){
-  grid.table(plotElement(object))
+  grid.table(evalElement(object))
 })
