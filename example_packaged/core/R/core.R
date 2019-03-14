@@ -1,8 +1,8 @@
 # Define Generics ---------------------------------------------------------------------------------
-setGeneric("evalElement",where = parent.frame(),def = function(object){standardGeneric("evalElement")})
-setGeneric("pdfElement",where = parent.frame(),def = function(object){standardGeneric("pdfElement")})
-setGeneric("shinyElement",where = parent.frame(),def = function(object){standardGeneric("shinyElement")})
-setGeneric("logElement",where = parent.frame(),def = function(object){standardGeneric("logElement")})
+setGeneric("evalElement",def = function(object){standardGeneric("evalElement")})
+setGeneric("pdfElement",def = function(object){standardGeneric("pdfElement")})
+setGeneric("shinyElement",def = function(object){standardGeneric("shinyElement")})
+setGeneric("logElement",def = function(object){standardGeneric("logElement")})
 
 # Define Report and Plot Classes --------------------------------------------------------------------
 
@@ -78,6 +78,7 @@ setMethod("shinyElement",signature = "Report",definition = function(object){
 #' 
 #' @export
 #' @author Sebastian Wolf (\email{zappingseb@@gmail.com})  
+setClass("AnyPlot", representation(plot_element="call"))
 
 
 # Constructors of AnyPlot classes ---------------------------------------------------------------------------

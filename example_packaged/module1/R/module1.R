@@ -3,7 +3,6 @@
 # Define Classes to use inside the apps ------------------------------------------------------------
 setClass("HistPlot", representation(color="character",obs="numeric"), contains = "AnyPlot")
 setClass("ScatterPlot", representation(obs="numeric"), contains = "AnyPlot")
-
 setClass("PlotReport",contains = "Report")
 
 
